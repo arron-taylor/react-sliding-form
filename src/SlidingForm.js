@@ -1,22 +1,30 @@
 import {
-  useEffect, useImperativeHandle, useState, useRef, createElement,
-  createRef, useMemo
+  useEffect,
+  useState,
+  useRef,
+  createElement,
+  createRef,
+  useMemo
 } from 'react'
-import { Button, Box, useMediaQuery, Stepper, StepLabel, Step, Collapse } from '@mui/material'
+import {
+  Button,
+  Box,
+  useMediaQuery,
+  Stepper,
+  StepLabel,
+  Step,
+  Collapse
+} from '@mui/material'
 import { ChevronLeftRounded } from '@mui/icons-material'
 import AliceCarousel from 'react-alice-carousel'
 
-export const useChildState = (values, ref, deps) => {
-  useImperativeHandle(
-    ref,
-    () => ({
-      getState: () => values
-    }),
-    deps
-  )
-}
-
-export const SlidingForm = ({ slideItems, closeAction, submitAction, styles, onSlideChange }) => {
+const SlidingForm = ({
+  slideItems,
+  closeAction,
+  submitAction,
+  styles,
+  onSlideChange
+}) => {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [stepReadyStatus, setStepReadyStatus] = useState({})
   const smallScreen = useMediaQuery('(max-width: 1024px)')
@@ -62,15 +70,15 @@ export const SlidingForm = ({ slideItems, closeAction, submitAction, styles, onS
     lastSlide && closeAction()
 
     if (submitSlide) {
-      submitAction({
-        ...itemsWithRefs.reduce(
-          (obj, item) => ({
-            ...obj,
-            ...item.props.refValue?.current?.getState()
-          }),
-          {}
-        )
-      })
+        submitAction({
+          ...itemsWithRefs.reduce(
+            (obj, item) => ({
+              ...obj,
+              ...item.props.refValue.current.getState()
+            }),
+            {}
+          )
+        })
       setTimeout(() => {
         handleForward()
       }, 900)
@@ -172,3 +180,5 @@ export const SlidingForm = ({ slideItems, closeAction, submitAction, styles, onS
     </Box>
   )
 }
+
+export default SlidingForm
