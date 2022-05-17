@@ -1,0 +1,28 @@
+{
+  "name": "react-sliding-form",
+  "version": "1.0.0",
+  "description": "Reusable react component and hook that makes building new multi-step forms and managing the state of all steps easy. Uses react-alice-carousel for a smooth sliding transition between steps ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arron-taylor/theportfoliobuilder.git"
+  },
+  "keywords": [
+    "react",
+    "form"
+  ],
+  "author": "arron-taylor",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arron-taylor/theportfoliobuilder/issues"
+  },
+  "homepage": "https://github.com/arron-taylor/theportfoliobuilder#readme",
+  "dependencies": {
+    "@mui/icons-material": "^5.8.0",
+    "@mui/material": "^5.8.0",
+    "react-alice-carousel": "^2.6.1"
+  }
+}
