@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/arron-taylor/theportfoliobuilder.git"
+    "url": "git+https://github.com/arron-taylor/react-sliding-form.git"
   },
   "keywords": [
     "react",
@@ -17,9 +17,9 @@
   "author": "arron-taylor",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/arron-taylor/theportfoliobuilder/issues"
+    "url": "https://github.com/arron-taylor/react-sliding-form/issues"
   },
-  "homepage": "https://github.com/arron-taylor/theportfoliobuilder#readme",
+  "homepage": "https://github.com/arron-taylor/react-sliding-form#readme",
   "dependencies": {
     "@mui/icons-material": "^5.8.0",
     "@mui/material": "^5.8.0",
