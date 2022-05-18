@@ -70,15 +70,18 @@ const SlidingForm = ({
     lastSlide && closeAction()
 
     if (submitSlide) {
-        submitAction({
-          ...itemsWithRefs.reduce(
-            (obj, item) => ({
+      submitAction({
+        ...itemsWithRefs.reduce((obj, item) => {
+          if (item.props.refValue.current) {
+            return {
               ...obj,
               ...item.props.refValue.current.getState()
-            }),
-            {}
-          )
-        })
+            }
+          } else {
+            return obj
+          }
+        }, {})
+      })
       setTimeout(() => {
         handleForward()
       }, 900)
