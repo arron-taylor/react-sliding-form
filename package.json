@@ -1,6 +1,6 @@
 {
   "name": "react-sliding-form",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "Reusable react component and hook that makes building new multi-step forms and managing the state of all steps easy. Uses react-alice-carousel for a smooth sliding transition between steps",
   "main": "dist/index.js",
   "private": false,

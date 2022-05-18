@@ -47,7 +47,24 @@ const SlidingForm = ({
           setIsReady: isReady =>
             isReady !== stepReadyStatus[index] &&
             setStepReadyStatus(prev => ({ ...prev, [index]: isReady })),
-          refValue: refs[index]
+          refValue: refs[index],
+          getAllStates: () =>
+            Object.values(refs)
+              .map(item => {
+                if (item.current) {
+                  return item
+                }
+              })
+              .reduce((obj, item) => {
+                if (item.current) {
+                  return {
+                    ...obj,
+                    ...item.current.getState()
+                  }
+                } else {
+                  return obj
+                }
+              }, {})
         })
       ),
     [stepReadyStatus]
