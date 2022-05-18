@@ -32,6 +32,7 @@ const SlidingForm = ({
   const carouselRef = useRef()
   const lastSlide = currentSlide === slideItems.length - 1
   const submitSlide = currentSlide === slideItems.length - 2
+  const [currentData, setCurrentData] = useState({})
 
   const steps = slideItems.map(item => item.label).filter(i => i !== undefined)
   const useStepper = steps.length > 0
@@ -47,10 +48,11 @@ const SlidingForm = ({
           setIsReady: isReady =>
             isReady !== stepReadyStatus[index] &&
             setStepReadyStatus(prev => ({ ...prev, [index]: isReady })),
-          refValue: refs[index]
+          refValue: refs[index],
+          currentData: currentData
         })
       ),
-    [stepReadyStatus]
+    [stepReadyStatus, currentData]
   )
 
   const lastSlideIsVisible = currentSlide === slideItems.length - 1
@@ -97,6 +99,24 @@ const SlidingForm = ({
     setCurrentSlide(e)
     // handle slides that do not call setIsReady, automatically set them to ready
     !refs[e].current && setStepReadyStatus(prev => ({ ...prev, [e]: true }))
+    setCurrentData(
+      Object.values(refs)
+        .map(item => {
+          if (item) {
+            return item
+          }
+        })
+        .reduce((obj, item) => {
+          if (item.current) {
+            return {
+              ...obj,
+              ...item.current.getState()
+            }
+          } else {
+            return obj
+          }
+        }, {})
+    )
   }
 
   useEffect(() => {
