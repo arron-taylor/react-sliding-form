@@ -64,7 +64,7 @@ import React, { useState, useEffect } from 'react'
 import { TextField, Box } from '@mui/material'
 import { useChildState } from '../UI/SlidingForm'
 
-const Step3 = ({ setIsReady, refValue }) => {
+const Step3 = ({ setIsReady, refValue, currentData }) => {
   const [zip, setZip] = useState(null)
   const [name, setName] = useState(null)
   const [phone, setPhone] = useState(null)
@@ -74,6 +74,8 @@ const Step3 = ({ setIsReady, refValue }) => {
   const zipIsValid = zip && /^\d{5}$/.test(zip)
   const emailIsValid =
     email && /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)
+
+  // currentData is an up to date global state of all steps
 
   const contactIsValid =
     (nameIsValid && phoneIsValid && zipIsValid && emailIsValid) || false
