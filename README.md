@@ -55,14 +55,14 @@ const Container = () => {
 ```
 ## How to write each step
 1. Make sure to consume the properties `{ setIsReady, refValue }`
-2. Make sure to use the `useChildState` hook and pass it all of the values you want to keep track of, along with the refValue prop, and finally a list of dependencies.
+2. Make sure to use the `useElevateChildState` hook and pass it all of the values you want to keep track of, along with the refValue prop, and finally a list of dependencies.
 3. When the step is considered "ready", call the `setIsReady` function with the current "ready state" of the step. 
 4. Once the step calls setIsReady, the buttons in the stepper will automatically update to allow for "next".
 
 ```
 import React, { useState, useEffect } from 'react'
 import { TextField, Box } from '@mui/material'
-import { useChildState } from '../UI/SlidingForm'
+import { useElevateChildState } from 'react-sliding-form'
 
 const Step3 = ({ setIsReady, refValue, currentData }) => {
   const [zip, setZip] = useState(null)
@@ -84,7 +84,7 @@ const Step3 = ({ setIsReady, refValue, currentData }) => {
     setIsReady(contactIsValid)
   }, [contactIsValid])
 
-  useChildState({ zip, name, phone, email }, 
+  useElevateChildState({ zip, name, phone, email },
     refValue, [zip, name, phone, email])
 
   return (
