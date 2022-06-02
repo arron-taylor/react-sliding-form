@@ -17,6 +17,7 @@ import {
 } from '@mui/material'
 import { ChevronLeftRounded } from '@mui/icons-material'
 
+
 const SlidingForm = ({
   slideItems,
   closeAction,
@@ -125,12 +126,26 @@ const SlidingForm = ({
 
   useEffect(() => {
     // on first render, set the height to match the first child
-    const firstSlideHeight = carouselRef && carouselRef.current && carouselRef.current.childNodes[0].offsetHeight || null
+    const firstSlideHeight =
+      (carouselRef &&
+        carouselRef.current &&
+        carouselRef.current.childNodes[0].offsetHeight) ||
+      null
     carouselRef.current.style.height = firstSlideHeight + 'px' || '0px'
+
+    // fix for iOS bug that breaks scrolling on a div with overflow: hidden;
+    firstSlideHeight &&
+      Array.from(carouselRef.current.childNodes.values()).map(
+        node => (node.style.pointerEvents = 'auto')
+      )
   }, [carouselRef])
 
   useEffect(() => {
-    const currentSlideHeight = carouselRef && carouselRef.current && carouselRef.current.childNodes[currentSlide].offsetHeight || null
+    const currentSlideHeight =
+      (carouselRef &&
+        carouselRef.current &&
+        carouselRef.current.childNodes[currentSlide].offsetHeight) ||
+      null
     carouselRef.current.style.height = currentSlideHeight + 'px' || '0px'
 
     if (carouselRef.current) {
@@ -152,8 +167,13 @@ const SlidingForm = ({
         ref={carouselRef}
         sx={{
           overflow: 'hidden',
+          overflowX: 'auto',
+          pointerEvents: 'none',
           display: 'flex',
-          transition: 'all .5s ease-in-out'
+          transition: 'all .5s ease-in-out',
+          '&::-webkit-scrollbar': {
+            display: 'none !important'
+          }
         }}
       >
         {itemsWithRefs.map(item => item)}
@@ -213,5 +233,6 @@ const SlidingForm = ({
     </Box>
   )
 }
+
 
 export default SlidingForm

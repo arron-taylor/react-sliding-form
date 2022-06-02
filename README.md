@@ -80,9 +80,7 @@ const Step3 = ({ setIsReady, refValue, currentData }) => {
   const contactIsValid =
     (nameIsValid && phoneIsValid && zipIsValid && emailIsValid) || false
 
-  useEffect(() => {
-    setIsReady(contactIsValid)
-  }, [contactIsValid])
+  setIsReady(contactIsValid)
 
   useElevateChildState({ zip, name, phone, email },
     refValue, [zip, name, phone, email])
