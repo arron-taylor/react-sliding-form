@@ -16,7 +16,6 @@ import {
   Collapse
 } from '@mui/material'
 import { ChevronLeftRounded } from '@mui/icons-material'
-import AliceCarousel from 'react-alice-carousel'
 
 const SlidingForm = ({
   slideItems,
@@ -27,12 +26,12 @@ const SlidingForm = ({
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [stepReadyStatus, setStepReadyStatus] = useState({})
+  const [currentData, setCurrentData] = useState({})
   const smallScreen = useMediaQuery('(max-width: 1024px)')
   const refs = { ...slideItems.map(() => createRef()) }
   const carouselRef = useRef()
   const lastSlide = currentSlide === slideItems.length - 1
   const submitSlide = currentSlide === slideItems.length - 2
-  const [currentData, setCurrentData] = useState({})
 
   const steps = slideItems.map(item => item.label).filter(i => i !== undefined)
   const useStepper = steps.length > 0
@@ -49,6 +48,7 @@ const SlidingForm = ({
             isReady !== stepReadyStatus[index] &&
             setStepReadyStatus(prev => ({ ...prev, [index]: isReady })),
           refValue: refs[index],
+          key: index,
           currentData: currentData
         })
       ),
@@ -60,11 +60,11 @@ const SlidingForm = ({
   const checkIfButtonDisabled = step => !readySteps.includes(step.toString())
 
   const handleBack = () => {
-    carouselRef.current.slidePrev()
+    handleSlideChange(currentSlide - 1)
   }
 
   const handleForward = () => {
-    carouselRef.current.slideNext()
+    handleSlideChange(currentSlide + 1)
   }
 
   const handleClickForward = () => {
@@ -97,8 +97,12 @@ const SlidingForm = ({
 
   const handleSlideChange = e => {
     setCurrentSlide(e)
+
     // handle slides that do not call setIsReady, automatically set them to ready
-    !refs[e].current && setStepReadyStatus(prev => ({ ...prev, [e]: true }))
+    if (refs[e] && !refs[e].current) {
+      setStepReadyStatus(prev => ({ ...prev, [e]: true }))
+    }
+
     setCurrentData(
       Object.values(refs)
         .map(item => {
@@ -120,33 +124,39 @@ const SlidingForm = ({
   }
 
   useEffect(() => {
+    // on first render, set the height to match the first child
+    const firstSlideHeight = carouselRef && carouselRef.current && carouselRef.current.childNodes[0].offsetHeight || null
+    carouselRef.current.style.height = firstSlideHeight + 'px' || '0px'
+  }, [carouselRef])
+
+  useEffect(() => {
+    const currentSlideHeight = carouselRef && carouselRef.current && carouselRef.current.childNodes[currentSlide].offsetHeight || null
+    carouselRef.current.style.height = currentSlideHeight + 'px' || '0px'
+
+    if (carouselRef.current) {
+      carouselRef.current.scrollTo({
+        left:
+          currentSlide *
+          carouselRef.current.childNodes[currentSlide].offsetWidth,
+        behavior: 'smooth'
+      })
+    }
+
     onSlideChange && onSlideChange(currentSlide)
   }, [currentSlide])
 
   return (
-    <Box
-      sx={{
-        maxWidth: '100%',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        borderRadius: '12px',
-        overflowY: 'hidden'
-      }}
-    >
-      <Box sx={{ maxHeight: '100vh', overflowY: 'hidden' }}>
-        <AliceCarousel
-          activeIndex={currentSlide}
-          animationDuration={600}
-          disableDotsControls
-          disableButtonsControls
-          autoHeight
-          mouseTracking={false}
-          touchTracking={false}
-          onSlideChanged={e => handleSlideChange(e.item)}
-          ref={carouselRef}
-          items={itemsWithRefs}
-        />
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <Box
+        id='carousel-wrapper'
+        ref={carouselRef}
+        sx={{
+          overflow: 'hidden',
+          display: 'flex',
+          transition: 'all .5s ease-in-out'
+        }}
+      >
+        {itemsWithRefs.map(item => item)}
       </Box>
 
       <Box sx={styles.paperChin}>

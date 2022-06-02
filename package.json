@@ -1,7 +1,7 @@
 {
   "name": "react-sliding-form",
-  "version": "1.0.24",
-  "description": "Reusable react component and hook that makes building new multi-step forms and managing the state of all steps easy. Uses react-alice-carousel for a smooth sliding transition between steps",
+  "version": "2.0.0",
+  "description": "Reusable react component and hook that makes building new multi-step forms and managing the state of all steps easy. Uses 'element.scrollTo()' for a smooth sliding transition between each step.",
   "main": "dist/index.js",
   "private": false,
   "scripts": {
@@ -33,7 +33,6 @@
   "dependencies": {
     "@mui/icons-material": "^5.8.0",
     "@mui/material": "^5.8.0",
-    "react-alice-carousel": "^2.6.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
