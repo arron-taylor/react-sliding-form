@@ -172,7 +172,9 @@ const SlidingForm = ({
           display: 'flex',
           transition: 'all .5s ease-in-out',
           '&::-webkit-scrollbar': {
-            display: 'none !important'
+            display: {
+              xs: 'none !important', sm: 'none !important', md: 'block'
+            }
           }
         }}
       >
