@@ -17,7 +17,6 @@ import {
 } from '@mui/material'
 import { ChevronLeftRounded } from '@mui/icons-material'
 
-
 const SlidingForm = ({
   slideItems,
   closeAction,
@@ -97,30 +96,44 @@ const SlidingForm = ({
   }
 
   const handleSlideChange = e => {
-    setCurrentSlide(e)
+    carouselRef.current && (carouselRef.current.style.overflowX = 'auto')
+    // setTimeout(() => setCurrentSlide(e), 250)
+    setTimeout(() => {
+      setCurrentSlide(e)
+      setTimeout(
+        () =>
+          carouselRef.current &&
+          (carouselRef.current.style.overflowX = 'hidden'),
+        750
+      )
+    }, 250)
 
     // handle slides that do not call setIsReady, automatically set them to ready
-    if (refs[e] && !refs[e].current) {
+    refs[e] &&
+      !refs[e].current &&
       setStepReadyStatus(prev => ({ ...prev, [e]: true }))
-    }
 
-    setCurrentData(
-      Object.values(refs)
-        .map(item => {
-          if (item) {
-            return item
-          }
-        })
-        .reduce((obj, item) => {
-          if (item.current) {
-            return {
-              ...obj,
-              ...item.current.getState()
-            }
-          } else {
-            return obj
-          }
-        }, {})
+    setTimeout(
+      () =>
+        setCurrentData(
+          Object.values(refs)
+            .map(item => {
+              if (item) {
+                return item
+              }
+            })
+            .reduce((obj, item) => {
+              if (item.current) {
+                return {
+                  ...obj,
+                  ...item.current.getState()
+                }
+              } else {
+                return obj
+              }
+            }, {})
+        ),
+      250
     )
   }
 
@@ -173,7 +186,9 @@ const SlidingForm = ({
           transition: 'all .5s ease-in-out',
           '&::-webkit-scrollbar': {
             display: {
-              xs: 'none !important', sm: 'none !important', md: 'block'
+              xs: 'none !important',
+              sm: 'none !important',
+              md: 'block'
             }
           }
         }}
@@ -235,6 +250,5 @@ const SlidingForm = ({
     </Box>
   )
 }
-
 
 export default SlidingForm
