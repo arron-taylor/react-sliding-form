@@ -180,7 +180,7 @@ const SlidingForm = ({
         ref={carouselRef}
         sx={{
           overflow: 'hidden',
-          overflowX: 'auto',
+          overflowX: 'hidden',
           pointerEvents: 'none',
           display: 'flex',
           transition: 'all .5s ease-in-out',
