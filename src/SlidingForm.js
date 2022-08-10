@@ -17,6 +17,7 @@ import {
 } from '@mui/material'
 import { ChevronLeftRounded } from '@mui/icons-material'
 
+
 const SlidingForm = ({
   slideItems,
   closeAction,
@@ -27,6 +28,7 @@ const SlidingForm = ({
   const [currentSlide, setCurrentSlide] = useState(0)
   const [stepReadyStatus, setStepReadyStatus] = useState({})
   const [currentData, setCurrentData] = useState({})
+  const [buttonDisabled, setButtonDisabled] = useState(false)
   const smallScreen = useMediaQuery('(max-width: 1024px)')
   const refs = { ...slideItems.map(() => createRef()) }
   const carouselRef = useRef()
@@ -98,14 +100,12 @@ const SlidingForm = ({
   const handleSlideChange = e => {
     carouselRef.current && (carouselRef.current.style.overflowX = 'auto')
     // setTimeout(() => setCurrentSlide(e), 250)
+    setButtonDisabled(false)
     setTimeout(() => {
       setCurrentSlide(e)
-      setTimeout(
-        () =>
-          carouselRef.current &&
-          (carouselRef.current.style.overflowX = 'hidden'),
-        750
-      )
+      setTimeout(() => {
+        carouselRef.current && (carouselRef.current.style.overflowX = 'hidden')
+      }, 750)
     }, 250)
 
     // handle slides that do not call setIsReady, automatically set them to ready
@@ -227,9 +227,13 @@ const SlidingForm = ({
             <Button
               disableElevation
               disableRipple
-              onClick={handleClickBack}
+              onClick={() => {
+                setButtonDisabled(true)
+                handleClickBack()
+              }}
               variant='text'
               sx={[styles.textButton]}
+              disabled={buttonDisabled}
             >
               <ChevronLeftRounded sx={{ mr: '.5rem' }} />
               Back
@@ -237,8 +241,11 @@ const SlidingForm = ({
           </Collapse>
           <Button
             disableElevation
-            disabled={checkIfButtonDisabled(currentSlide)}
-            onClick={handleClickForward}
+            disabled={checkIfButtonDisabled(currentSlide) || buttonDisabled}
+            onClick={() => {
+              setButtonDisabled(true)
+              handleClickForward()
+            }}
             disableRipple
             variant='contained'
             sx={[styles.filledButton]}
