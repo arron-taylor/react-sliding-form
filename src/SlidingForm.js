@@ -17,7 +17,6 @@ import {
 } from '@mui/material'
 import { ChevronLeftRounded } from '@mui/icons-material'
 
-
 const SlidingForm = ({
   slideItems,
   closeAction,
@@ -99,7 +98,6 @@ const SlidingForm = ({
 
   const handleSlideChange = e => {
     carouselRef.current && (carouselRef.current.style.overflowX = 'auto')
-    // setTimeout(() => setCurrentSlide(e), 250)
     setButtonDisabled(false)
     setTimeout(() => {
       setCurrentSlide(e)
