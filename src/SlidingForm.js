@@ -4,7 +4,7 @@ import {
   useRef,
   createElement,
   createRef,
-  useMemo
+  useMemo,
 } from 'react'
 import {
   Button,
@@ -13,7 +13,7 @@ import {
   Stepper,
   StepLabel,
   Step,
-  Collapse
+  Collapse,
 } from '@mui/material'
 import { ChevronLeftRounded } from '@mui/icons-material'
 
@@ -22,7 +22,8 @@ const SlidingForm = ({
   closeAction,
   submitAction,
   styles,
-  onSlideChange
+  onSlideChange,
+  ...props
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [stepReadyStatus, setStepReadyStatus] = useState({})
@@ -50,7 +51,8 @@ const SlidingForm = ({
             setStepReadyStatus(prev => ({ ...prev, [index]: isReady })),
           refValue: refs[index],
           key: index,
-          currentData: currentData
+          currentData: currentData,
+          ...props,
         })
       ),
     [stepReadyStatus, currentData]
@@ -78,12 +80,12 @@ const SlidingForm = ({
           if (item.props.refValue.current) {
             return {
               ...obj,
-              ...item.props.refValue.current.getState()
+              ...item.props.refValue.current.getState(),
             }
           } else {
             return obj
           }
-        }, {})
+        }, {}),
       })
       setTimeout(() => {
         handleForward()
@@ -124,7 +126,7 @@ const SlidingForm = ({
               if (item.current) {
                 return {
                   ...obj,
-                  ...item.current.getState()
+                  ...item.current.getState(),
                 }
               } else {
                 return obj
@@ -164,7 +166,7 @@ const SlidingForm = ({
         left:
           currentSlide *
           carouselRef.current.childNodes[currentSlide].offsetWidth,
-        behavior: 'smooth'
+        behavior: 'smooth',
       })
     }
 
@@ -186,9 +188,9 @@ const SlidingForm = ({
             display: {
               xs: 'none !important',
               sm: 'none !important',
-              md: 'block'
-            }
-          }
+              md: 'block',
+            },
+          },
         }}
       >
         {itemsWithRefs.map(item => item)}
@@ -214,11 +216,11 @@ const SlidingForm = ({
           sx={[
             {
               justifyContent: 'space-between',
-              display: 'flex'
+              display: 'flex',
             },
             useStepper && {
-              mt: lastSlideIsVisible ? '0rem' : '1rem'
-            }
+              mt: lastSlideIsVisible ? '0rem' : '1rem',
+            },
           ]}
         >
           <Collapse in={!lastSlideIsVisible}>
