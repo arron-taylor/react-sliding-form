@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef, createElement, createRef, useMemo } from 'react'
 import { Button, Box, useMediaQuery, Stepper, StepLabel, Step, Collapse } from '@mui/material'
 import { ChevronLeftRounded } from '@mui/icons-material'
+
+
 const SlidingForm = ({ slideItems, closeAction, submitAction, styles, onSlideChange, ...props }) => {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [stepReadyStatus, setStepReadyStatus] = useState({})
@@ -76,6 +78,13 @@ const SlidingForm = ({ slideItems, closeAction, submitAction, styles, onSlideCha
     carouselRef.current && (carouselRef.current.style.overflowX = 'auto')
     setButtonDisabled(false)
 
+    setTimeout(() => {
+      setCurrentSlide(e)
+      setTimeout(() => {
+        carouselRef.current && (carouselRef.current.style.overflowX = 'hidden')
+      }, 750)
+    }, 150)
+
     // handle slides that do not call setIsReady, automatically set them to ready
     refs[e] && !refs[e].current && setStepReadyStatus((prev) => ({ ...prev, [e]: true }))
 
@@ -99,15 +108,9 @@ const SlidingForm = ({ slideItems, closeAction, submitAction, styles, onSlideCha
               }
             }, {})
         ),
-      250
+      300
     )
 
-    setTimeout(() => {
-      setCurrentSlide(e)
-      setTimeout(() => {
-        carouselRef.current && (carouselRef.current.style.overflowX = 'hidden')
-      }, 750)
-    }, 250)
   }
 
   useEffect(() => {
