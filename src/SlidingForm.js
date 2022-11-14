@@ -170,7 +170,26 @@ const SlidingForm = ({
       })
     }
 
-    onSlideChange && onSlideChange({ currentSlide, currentData })
+    onSlideChange &&
+      onSlideChange({
+        currentSlide,
+        currentData: Object.values(refs)
+          .map(item => {
+            if (item) {
+              return item
+            }
+          })
+          .reduce((obj, item) => {
+            if (item.current) {
+              return {
+                ...obj,
+                ...item.current.getState(),
+              }
+            } else {
+              return obj
+            }
+          }, {}),
+      })
   }, [currentSlide])
 
   return (
