@@ -1,30 +1,7 @@
-import {
-  useEffect,
-  useState,
-  useRef,
-  createElement,
-  createRef,
-  useMemo,
-} from 'react'
-import {
-  Button,
-  Box,
-  useMediaQuery,
-  Stepper,
-  StepLabel,
-  Step,
-  Collapse,
-} from '@mui/material'
+import { useEffect, useState, useRef, createElement, createRef, useMemo } from 'react'
+import { Button, Box, useMediaQuery, Stepper, StepLabel, Step, Collapse } from '@mui/material'
 import { ChevronLeftRounded } from '@mui/icons-material'
-
-const SlidingForm = ({
-  slideItems,
-  closeAction,
-  submitAction,
-  styles,
-  onSlideChange,
-  ...props
-}) => {
+const SlidingForm = ({ slideItems, closeAction, submitAction, styles, onSlideChange, ...props }) => {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [stepReadyStatus, setStepReadyStatus] = useState({})
   const [currentData, setCurrentData] = useState({})
@@ -35,20 +12,17 @@ const SlidingForm = ({
   const lastSlide = currentSlide === slideItems.length - 1
   const submitSlide = currentSlide === slideItems.length - 2
 
-  const steps = slideItems.map(item => item.label).filter(i => i !== undefined)
+  const steps = slideItems.map((item) => item.label).filter((i) => i !== undefined)
   const useStepper = steps.length > 0
 
-  const readySteps = Object.keys(stepReadyStatus).map((item, index) =>
-    stepReadyStatus[index] === true ? item : ''
-  )
+  const readySteps = Object.keys(stepReadyStatus).map((item, index) => (stepReadyStatus[index] === true ? item : ''))
 
   const itemsWithRefs = useMemo(
     () =>
       slideItems.map((item, index) =>
         createElement(item.slide, {
-          setIsReady: isReady =>
-            isReady !== stepReadyStatus[index] &&
-            setStepReadyStatus(prev => ({ ...prev, [index]: isReady })),
+          setIsReady: (isReady) =>
+            isReady !== stepReadyStatus[index] && setStepReadyStatus((prev) => ({ ...prev, [index]: isReady })),
           refValue: refs[index],
           key: index,
           currentData: currentData,
@@ -60,7 +34,7 @@ const SlidingForm = ({
 
   const lastSlideIsVisible = currentSlide === slideItems.length - 1
 
-  const checkIfButtonDisabled = step => !readySteps.includes(step.toString())
+  const checkIfButtonDisabled = (step) => !readySteps.includes(step.toString())
 
   const handleBack = () => {
     handleSlideChange(currentSlide - 1)
@@ -98,26 +72,18 @@ const SlidingForm = ({
     currentSlide === 0 && closeAction()
   }
 
-  const handleSlideChange = e => {
+  const handleSlideChange = (e) => {
     carouselRef.current && (carouselRef.current.style.overflowX = 'auto')
     setButtonDisabled(false)
-    setTimeout(() => {
-      setCurrentSlide(e)
-      setTimeout(() => {
-        carouselRef.current && (carouselRef.current.style.overflowX = 'hidden')
-      }, 750)
-    }, 250)
 
     // handle slides that do not call setIsReady, automatically set them to ready
-    refs[e] &&
-      !refs[e].current &&
-      setStepReadyStatus(prev => ({ ...prev, [e]: true }))
+    refs[e] && !refs[e].current && setStepReadyStatus((prev) => ({ ...prev, [e]: true }))
 
     setTimeout(
       () =>
         setCurrentData(
           Object.values(refs)
-            .map(item => {
+            .map((item) => {
               if (item) {
                 return item
               }
@@ -135,37 +101,34 @@ const SlidingForm = ({
         ),
       250
     )
+
+    setTimeout(() => {
+      setCurrentSlide(e)
+      setTimeout(() => {
+        carouselRef.current && (carouselRef.current.style.overflowX = 'hidden')
+      }, 750)
+    }, 250)
   }
 
   useEffect(() => {
     // on first render, set the height to match the first child
     const firstSlideHeight =
-      (carouselRef &&
-        carouselRef.current &&
-        carouselRef.current.childNodes[0].offsetHeight) ||
-      null
+      (carouselRef && carouselRef.current && carouselRef.current.childNodes[0].offsetHeight) || null
     carouselRef.current.style.height = firstSlideHeight + 'px' || '0px'
 
     // fix for iOS bug that breaks scrolling on a div with overflow: hidden;
     firstSlideHeight &&
-      Array.from(carouselRef.current.childNodes.values()).map(
-        node => (node.style.pointerEvents = 'auto')
-      )
+      Array.from(carouselRef.current.childNodes.values()).map((node) => (node.style.pointerEvents = 'auto'))
   }, [carouselRef])
 
   useEffect(() => {
     const currentSlideHeight =
-      (carouselRef &&
-        carouselRef.current &&
-        carouselRef.current.childNodes[currentSlide].offsetHeight) ||
-      null
+      (carouselRef && carouselRef.current && carouselRef.current.childNodes[currentSlide].offsetHeight) || null
     carouselRef.current.style.height = currentSlideHeight + 'px' || '0px'
 
     if (carouselRef.current) {
       carouselRef.current.scrollTo({
-        left:
-          currentSlide *
-          carouselRef.current.childNodes[currentSlide].offsetWidth,
+        left: currentSlide * carouselRef.current.childNodes[currentSlide].offsetWidth,
         behavior: 'smooth',
       })
     }
@@ -173,29 +136,14 @@ const SlidingForm = ({
     onSlideChange &&
       onSlideChange({
         currentSlide,
-        currentData: Object.values(refs)
-          .map(item => {
-            if (item) {
-              return item
-            }
-          })
-          .reduce((obj, item) => {
-            if (item.current) {
-              return {
-                ...obj,
-                ...item.current.getState(),
-              }
-            } else {
-              return obj
-            }
-          }, {}),
+        currentData,
       })
   }, [currentSlide])
 
   return (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <Box
-        id='carousel-wrapper'
+        id="carousel-wrapper"
         ref={carouselRef}
         sx={{
           overflow: 'hidden',
@@ -212,18 +160,14 @@ const SlidingForm = ({
           },
         }}
       >
-        {itemsWithRefs.map(item => item)}
+        {itemsWithRefs.map((item) => item)}
       </Box>
 
       <Box sx={styles.paperChin}>
         {useStepper && (
           <Collapse in={!lastSlideIsVisible}>
-            <Stepper
-              alternativeLabel={smallScreen}
-              activeStep={currentSlide}
-              style={{ width: '100%' }}
-            >
-              {steps.map(label => (
+            <Stepper alternativeLabel={smallScreen} activeStep={currentSlide} style={{ width: '100%' }}>
+              {steps.map((label) => (
                 <Step key={label}>
                   <StepLabel sx={styles.stepLabel}>{label}</StepLabel>
                 </Step>
@@ -250,7 +194,7 @@ const SlidingForm = ({
                 setButtonDisabled(true)
                 handleClickBack()
               }}
-              variant='text'
+              variant="text"
               sx={[styles.textButton]}
               disabled={buttonDisabled}
             >
@@ -266,7 +210,7 @@ const SlidingForm = ({
               handleClickForward()
             }}
             disableRipple
-            variant='contained'
+            variant="contained"
             sx={[styles.filledButton]}
           >
             {currentSlide === slideItems.length - 1 ? 'Got it' : 'Next'}
