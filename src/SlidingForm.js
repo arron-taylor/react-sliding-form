@@ -170,7 +170,7 @@ const SlidingForm = ({
       })
     }
 
-    onSlideChange && onSlideChange(currentSlide)
+    onSlideChange && onSlideChange({ currentSlide, currentData })
   }, [currentSlide])
 
   return (
