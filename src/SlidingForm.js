@@ -1,23 +1,44 @@
-import { useEffect, useState, useRef, createElement, createRef, useMemo } from 'react'
-import { Button, Box, useMediaQuery, Stepper, StepLabel, Step, Collapse } from '@mui/material'
+import { useEffect, useState, useRef, createElement, createRef, useMemo, memo } from 'react'
+import { Button, Box, Stepper, StepLabel, Step, Collapse } from '@mui/material'
 import { ChevronLeftRounded } from '@mui/icons-material'
 
-
-const SlidingForm = ({ slideItems, closeAction, submitAction, styles, onSlideChange, ...props }) => {
+const WrappedSlidingForm = ({
+  slideItems,
+  closeAction,
+  submitAction,
+  styles,
+  onSlideChange,
+  slideChangeDelay,
+  smallScreen,
+  useStepper = true
+}) => {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [stepReadyStatus, setStepReadyStatus] = useState({})
-  const [currentData, setCurrentData] = useState({})
   const [buttonDisabled, setButtonDisabled] = useState(false)
-  const smallScreen = useMediaQuery('(max-width: 1024px)')
-  const refs = { ...slideItems.map(() => createRef()) }
+  const refs = useMemo(() => ({ ...slideItems.map(() => createRef()) }), [slideItems])
   const carouselRef = useRef()
   const lastSlide = currentSlide === slideItems.length - 1
   const submitSlide = currentSlide === slideItems.length - 2
-
   const steps = slideItems.map((item) => item.label).filter((i) => i !== undefined)
-  const useStepper = steps.length > 0
 
   const readySteps = Object.keys(stepReadyStatus).map((item, index) => (stepReadyStatus[index] === true ? item : ''))
+
+  const currentData = Object.values(refs)
+    .map((item) => {
+      if (item) {
+        return item
+      }
+    })
+    .reduce((obj, item) => {
+      if (item.current) {
+        return {
+          ...obj,
+          ...item.current.getState(),
+        }
+      } else {
+        return obj
+      }
+    }, {})
 
   const itemsWithRefs = useMemo(
     () =>
@@ -28,10 +49,9 @@ const SlidingForm = ({ slideItems, closeAction, submitAction, styles, onSlideCha
           refValue: refs[index],
           key: index,
           currentData: currentData,
-          ...props,
         })
       ),
-    [stepReadyStatus, currentData]
+    [stepReadyStatus, currentData, refs, slideItems]
   )
 
   const lastSlideIsVisible = currentSlide === slideItems.length - 1
@@ -62,10 +82,7 @@ const SlidingForm = ({ slideItems, closeAction, submitAction, styles, onSlideCha
             return obj
           }
         }, {}),
-      })
-      setTimeout(() => {
-        handleForward()
-      }, 900)
+      }).then((_) => handleForward())
     }
   }
 
@@ -83,34 +100,7 @@ const SlidingForm = ({ slideItems, closeAction, submitAction, styles, onSlideCha
       setTimeout(() => {
         carouselRef.current && (carouselRef.current.style.overflowX = 'hidden')
       }, 750)
-    }, 150)
-
-    // handle slides that do not call setIsReady, automatically set them to ready
-    refs[e] && !refs[e].current && setStepReadyStatus((prev) => ({ ...prev, [e]: true }))
-
-    setTimeout(
-      () =>
-        setCurrentData(
-          Object.values(refs)
-            .map((item) => {
-              if (item) {
-                return item
-              }
-            })
-            .reduce((obj, item) => {
-              if (item.current) {
-                return {
-                  ...obj,
-                  ...item.current.getState(),
-                }
-              } else {
-                return obj
-              }
-            }, {})
-        ),
-      300
-    )
-
+    }, slideChangeDelay || 250)
   }
 
   useEffect(() => {
@@ -216,12 +206,14 @@ const SlidingForm = ({ slideItems, closeAction, submitAction, styles, onSlideCha
             variant="contained"
             sx={[styles.filledButton]}
           >
-            {currentSlide === slideItems.length - 1 ? 'Got it' : 'Next'}
+            {slideItems[currentSlide]?.nextButtonLabel || 'Next'}
           </Button>
         </Box>
       </Box>
     </Box>
   )
 }
+
+const SlidingForm = memo(WrappedSlidingForm, () => true)
 
 export default SlidingForm
