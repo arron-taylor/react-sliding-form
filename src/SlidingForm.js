@@ -206,7 +206,7 @@ const WrappedSlidingForm = ({
             variant="contained"
             sx={[styles.filledButton]}
           >
-            {slideItems[currentSlide]?.nextButtonLabel || 'Next'}
+            {slideItems[currentSlide] && slideItems[currentSlide].nextButtonLabel || 'Next'}
           </Button>
         </Box>
       </Box>
