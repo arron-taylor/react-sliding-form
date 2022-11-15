@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef, createElement, createRef, useMemo, memo } from 'react'
 import { Button, Box, Stepper, StepLabel, Step, Collapse } from '@mui/material'
 import { ChevronLeftRounded } from '@mui/icons-material'
-
 const WrappedSlidingForm = ({
   slideItems,
   closeAction,
@@ -100,6 +99,7 @@ const WrappedSlidingForm = ({
       setTimeout(() => {
         carouselRef.current && (carouselRef.current.style.overflowX = 'hidden')
       }, 750)
+      refs[e] && !refs[e].current && setStepReadyStatus((prev) => ({ ...prev, [e]: true }))
     }, slideChangeDelay || 250)
   }
 
