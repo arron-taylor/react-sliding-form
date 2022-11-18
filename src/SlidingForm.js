@@ -39,6 +39,8 @@ const WrappedSlidingForm = ({
       }
     }, {})
 
+  currentData.currentStep = currentSlide
+
   const itemsWithRefs = useMemo(
     () =>
       slideItems.map((item, index) =>
