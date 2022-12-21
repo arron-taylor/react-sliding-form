@@ -108,7 +108,8 @@ const WrappedSlidingForm = ({
   useEffect(() => {
     const currentSlideHeight =
       (carouselRef && carouselRef.current && carouselRef.current.childNodes[currentSlide].offsetHeight) || null
-    !smallScreen && (carouselRef.current.style.height = currentSlideHeight + 'px' || '0px')
+
+    carouselRef.current.style.height = currentSlideHeight + 'px' || '0px'
 
     if (carouselRef.current) {
       carouselRef.current.scrollTo({
