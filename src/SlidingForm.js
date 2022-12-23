@@ -96,6 +96,7 @@ const WrappedSlidingForm = ({
 
   const handleSlideChange = e => {
     setButtonDisabled(false)
+
     setTimeout(() => {
       setCurrentSlide(e)
       refs[e] && !refs[e].current && setStepReadyStatus(prev => ({ ...prev, [e]: true }))
@@ -104,30 +105,35 @@ const WrappedSlidingForm = ({
 
   useEffect(() => {
     Array.from(carouselRef.current.childNodes.values()).map(node => (node.style.pointerEvents = 'auto'))
+    Array.from(carouselRef.current.childNodes.values()).map(
+      node => (node.style.transition = 'all .25s cubic-bezier(0.46, 0.03, 0.52, 0.96) 0s')
+    )
   }, [carouselRef])
 
   useEffect(() => {
     const currentSlideHeight =
       (carouselRef && carouselRef.current && carouselRef.current.childNodes[currentSlide].offsetHeight) || null
-
     carouselRef.current.style.height = currentSlideHeight + 'px' || '0px'
-
     if (carouselRef.current) {
       if (beforeSlideChange) {
         beforeSlideChange({
           currentSlide,
           currentData,
-        }).then(res =>
-          carouselRef.current.scrollTo({
-            left: currentSlide * carouselRef.current.childNodes[currentSlide].offsetWidth,
-            behavior: 'smooth',
-          })
-        )
-      } else {
-        carouselRef.current.scrollTo({
-          left: currentSlide * carouselRef.current.childNodes[currentSlide].offsetWidth,
-          behavior: 'smooth',
+        }).then(res => {
+          Array.from(carouselRef.current.childNodes.values()).map(
+            node =>
+              (node.style.transform = `translateX(-${
+                currentSlide * carouselRef.current.childNodes[currentSlide].offsetWidth
+              }px)`)
+          )
         })
+      } else {
+        Array.from(carouselRef.current.childNodes.values()).map(
+          node =>
+            (node.style.transform = `translateX(-${
+              currentSlide * carouselRef.current.childNodes[currentSlide].offsetWidth
+            }px)`)
+        )
       }
     }
 
@@ -144,11 +150,10 @@ const WrappedSlidingForm = ({
         id='carousel-wrapper'
         ref={carouselRef}
         sx={{
-          overflow: 'hidden',
-          overflowX: 'hidden',
-          pointerEvents: 'none',
+          overflow: 'hidden !important',
+          pointerEvents: 'none !important',
           display: 'flex',
-          transition: 'all .5s ease-in-out',
+          transition: 'all .25s ease-in-out',
           '&::-webkit-scrollbar': {
             display: {
               xs: 'none !important',
