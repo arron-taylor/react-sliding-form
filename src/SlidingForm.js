@@ -7,8 +7,9 @@ const WrappedSlidingForm = ({
   closeAction,
   submitAction,
   styles,
-  onSlideChange,
-  slideChangeDelay,
+  onSlideChange = null,
+  beforeSlideChange,
+  slideChangeDelay = null,
   smallScreen,
   useStepper = true,
 }) => {
@@ -112,10 +113,22 @@ const WrappedSlidingForm = ({
     carouselRef.current.style.height = currentSlideHeight + 'px' || '0px'
 
     if (carouselRef.current) {
-      carouselRef.current.scrollTo({
-        left: currentSlide * carouselRef.current.childNodes[currentSlide].offsetWidth,
-        behavior: 'smooth',
-      })
+      if (beforeSlideChange) {
+        beforeSlideChange({
+          currentSlide,
+          currentData,
+        }).then(res =>
+          carouselRef.current.scrollTo({
+            left: currentSlide * carouselRef.current.childNodes[currentSlide].offsetWidth,
+            behavior: 'smooth',
+          })
+        )
+      } else {
+        carouselRef.current.scrollTo({
+          left: currentSlide * carouselRef.current.childNodes[currentSlide].offsetWidth,
+          behavior: 'smooth',
+        })
+      }
     }
 
     onSlideChange &&
