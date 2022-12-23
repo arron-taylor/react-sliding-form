@@ -153,7 +153,7 @@ const WrappedSlidingForm = ({
           overflow: 'hidden !important',
           pointerEvents: 'none !important',
           display: 'flex',
-          transition: 'all .25s ease-in-out',
+          transition: 'all .5s ease-in-out',
           '&::-webkit-scrollbar': {
             display: {
               xs: 'none !important',
