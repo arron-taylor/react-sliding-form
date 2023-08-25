@@ -12,6 +12,9 @@ const WrappedSlidingForm = ({
   slideChangeDelay = null,
   smallScreen,
   useStepper = true,
+  beforeNextButtonClick = null,
+  carouselDataRef = null,
+  alternativeLabel = false,
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [stepReadyStatus, setStepReadyStatus] = useState({})
@@ -21,7 +24,6 @@ const WrappedSlidingForm = ({
   const lastSlide = currentSlide === slideItems.length - 1
   const submitSlide = currentSlide === slideItems.length - 2
   const steps = slideItems.map(item => item.label).filter(i => i !== undefined)
-
   const readySteps = Object.keys(stepReadyStatus).map((item, index) => (stepReadyStatus[index] === true ? item : ''))
 
   const currentData = Object.values(refs)
@@ -42,6 +44,7 @@ const WrappedSlidingForm = ({
     }, {})
 
   currentData.currentStep = currentSlide
+  carouselDataRef && (carouselDataRef.current = currentData)
 
   const itemsWithRefs = useMemo(
     () =>
@@ -93,6 +96,9 @@ const WrappedSlidingForm = ({
     currentSlide !== 0 && handleBack()
     currentSlide === 0 && closeAction()
   }
+
+  currentData.handleBack = handleClickBack
+  currentData.handleForward = handleClickForward
 
   const handleSlideChange = e => {
     setButtonDisabled(false)
@@ -169,7 +175,11 @@ const WrappedSlidingForm = ({
       <Box sx={styles.paperChin}>
         {useStepper && (
           <Collapse in={!lastSlideIsVisible}>
-            <Stepper alternativeLabel={smallScreen} activeStep={currentSlide} style={{ width: '100%' }}>
+            <Stepper
+              alternativeLabel={smallScreen || alternativeLabel}
+              activeStep={currentSlide}
+              style={{ width: '100%' }}
+            >
               {steps.map(label => (
                 <Step key={label}>
                   <StepLabel sx={styles.stepLabel}>{label}</StepLabel>
@@ -209,8 +219,43 @@ const WrappedSlidingForm = ({
             disableElevation
             disabled={checkIfButtonDisabled(currentSlide) || buttonDisabled}
             onClick={() => {
-              setButtonDisabled(true)
-              handleClickForward()
+              beforeNextButtonClick &&
+                beforeNextButtonClick({
+                  currentSlide,
+                  currentData: Object.values(refs)
+                    .map(item => {
+                      if (item) {
+                        return item
+                      }
+                    })
+                    .reduce(
+                      (obj, item) => {
+                        if (item.current) {
+                          return {
+                            ...obj,
+                            ...item.current.getState(),
+                          }
+                        } else {
+                          return obj
+                        }
+                      },
+                      {
+                        handleBack: handleClickBack,
+                        handleForward: handleClickForward,
+                      }
+                    ),
+                })
+                  .then(() => {
+                    setButtonDisabled(true)
+                    handleClickForward()
+                  })
+                  .catch(e => console.log('error from beforeNextButtonClick, prevented user from moving to next step '))
+              if (!beforeNextButtonClick) {
+                {
+                  setButtonDisabled(true)
+                  handleClickForward()
+                }
+              }
             }}
             disableRipple
             variant='contained'
